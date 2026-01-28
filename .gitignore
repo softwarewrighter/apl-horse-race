@@ -1,5 +1,6 @@
 # GNU APL workspaces
 *.xml
+.apl.history
 
 # Editor files
 *~

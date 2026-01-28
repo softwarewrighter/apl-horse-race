@@ -41,3 +41,12 @@ apl -f src/idiomatic-race.apl
 ```
 
 Requires a Unicode-capable terminal.
+
+## Sample Output
+
+APL uses special glyphs (⍴, ⍳, ∇, ⎕, ←, etc.) that may not display correctly without Unicode fonts. PNG versions are provided to ensure visibility:
+
+| Version | Source Code | Sample Output |
+|---------|-------------|---------------|
+| Verbose | [race.apl](src/race.apl) ([PNG](samples/race-source.png)) | [Text](samples/race-output.txt) / [PNG](samples/race-output.png) |
+| Idiomatic | [idiomatic-race.apl](src/idiomatic-race.apl) ([PNG](samples/idiomatic-race-source.png)) | [Text](samples/idiomatic-race-output.txt) / [PNG](samples/idiomatic-race-output.png) |

@@ -1,0 +1,45 @@
+THE RACE IS ON!
+LUCKY  │░░▓
+THUNDER│░▓
+SHADOW │░░░▓
+COMET  │░░░▓
+BLAZE  │░░▓
+
+LUCKY  │░░░░▓
+THUNDER│░░░░▓
+SHADOW │░░░░░▓
+COMET  │░░░░▓
+BLAZE  │░░░░▓
+
+LUCKY  │░░░░░░▓
+THUNDER│░░░░░▓
+SHADOW │░░░░░░░░▓
+COMET  │░░░░░░░▓
+BLAZE  │░░░░░░░▓
+
+LUCKY  │░░░░░░░░▓
+THUNDER│░░░░░░░▓
+SHADOW │░░░░░░░░░░░▓
+COMET  │░░░░░░░░▓
+BLAZE  │░░░░░░░░░░▓
+
+LUCKY  │░░░░░░░░░░▓
+THUNDER│░░░░░░░░░▓
+SHADOW │░░░░░░░░░░░░░▓
+COMET  │░░░░░░░░░▓
+BLAZE  │░░░░░░░░░░░▓
+
+LUCKY  │░░░░░░░░░░░░▓
+THUNDER│░░░░░░░░░░▓
+SHADOW │░░░░░░░░░░░░░░▓
+COMET  │░░░░░░░░░░▓
+BLAZE  │░░░░░░░░░░░░▓
+
+LUCKY  │░░░░░░░░░░░░░░░▓
+THUNDER│░░░░░░░░░░░▓
+SHADOW │░░░░░░░░░░░░░░░░░▓
+COMET  │░░░░░░░░░░░░░▓
+BLAZE  │░░░░░░░░░░░░░░░▓
+
+WINNER: SHADOW 
+
