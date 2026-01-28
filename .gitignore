@@ -1,0 +1,11 @@
+# GNU APL workspaces
+*.xml
+
+# Editor files
+*~
+*.swp
+.DS_Store
+
+# IDE
+.idea/
+.vscode/
