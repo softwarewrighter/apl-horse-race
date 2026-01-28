@@ -42,3 +42,25 @@ Two implementations of the same race simulation:
 Detailed line-by-line explanations in `/docs/`:
 - `race-apl-explained.md` - comprehensive breakdown of verbose version
 - `idiomatic-race-explained.md` - explanation of compact version
+
+## Samples
+
+The `/samples/` directory contains captured outputs and PNG renders:
+- Text files (`.txt`) - raw output from running demos
+- PNG files - rendered images ensuring APL glyphs display correctly
+
+**Capturing new output:**
+```bash
+apl --script -f src/race.apl 2>/dev/null > samples/race-output.txt
+```
+
+**Generating PNGs from text (requires pango-view):**
+```bash
+pango-view --font="monospace 12" -qo samples/race-output.png samples/race-output.txt
+pango-view --font="monospace 12" -qo samples/race-source.png src/race.apl
+```
+
+## APL Language Family
+
+GNU APL implements ISO 13751 (Extended APL), not APL\360 directly, but is compatible with most APL\360 code. Related languages:
+- APL2 (1984), Dyalog APL (1983), A+ (1988), J (1990), K (1993), Nial (1981), BQN (2020)

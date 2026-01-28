@@ -11,7 +11,15 @@ APL\360 was IBM's original APL implementation, released in 1966. It ran on IBM S
 **Key differences from the 1970s original:**
 - Unicode characters (`░▓`) replace the original APL overstrike graphics or simple ASCII
 - GNU APL runs locally; APL\360 was a time-sharing system
-- The core APL syntax and semantics remain remarkably unchanged after 50+ years
+
+GNU APL implements the ISO 13751 standard (Extended APL), not APL\360 directly, but APL\360 code generally runs with minimal changes. Many languages have evolved from or been inspired by APL:
+- **APL2** (IBM, 1984) — nested arrays
+- **A+** (Morgan Stanley, 1988) — open source, extended for financial applications
+- **J** (Iverson & Hui, 1990) — ASCII-only syntax
+- **K** (Kx Systems, 1993) — terse, high-performance
+- **Dyalog APL** (1983, ongoing) — commercial, feature-rich
+- **Nial** (Queen's University, 1981) — nested arrays, English-like syntax
+- **BQN** (2020) — modern redesign with cleaner semantics
 
 ## Overview
 
@@ -228,7 +236,7 @@ BLAZE   ░░░░░▓
 
 ## Design Notes
 
-1. **No explicit loops**: APL operates on entire arrays at once (`POS←POS+?5⍴3` updates all 5 horses in one statement)
+1. **Array operations avoid nested loops**: APL operates on entire arrays at once (`POS←POS+?5⍴3` updates all 5 horses in one statement). Control flow uses branch (`→`) with labels rather than traditional for/while constructs.
 
 2. **Conditional branches**: The `→LABEL×⍳condition` pattern is idiomatic APL for conditional jumps
 
@@ -244,7 +252,7 @@ BLAZE   ░░░░░▓
 
 ### What's the Same
 
-The core language is remarkably preserved:
+GNU APL (ISO 13751) is compatible with most APL\360 code:
 - Function definition syntax (`∇...∇`)
 - Local variables after semicolon
 - Branch with `→` and labels
