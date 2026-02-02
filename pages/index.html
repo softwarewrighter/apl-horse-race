@@ -371,6 +371,15 @@
                 await typeLine('');
                 await promptForInput();
             } else if (aplCmd === 'VARS') {
+                await typeLine('ABOUT');
+                await typeLine('');
+                await promptForInput();
+            } else if (aplCmd === 'ABOUT') {
+                await typeLine('');
+                await typeLine('LICENSE: MIT');
+                await typeLine('COPYRIGHT (C) 2026 MICHAEL A. WRIGHT');
+                await typeLine('GITHUB: SW-COMP-HISTORY');
+                await typeLine('REPO: APL-HORSE-RACE');
                 await typeLine('');
                 await promptForInput();
             } else if (aplCmd === 'WSID') {
