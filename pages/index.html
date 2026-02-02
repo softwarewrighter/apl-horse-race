@@ -215,8 +215,6 @@
             await typeLine('WINNER: ' + winner + ' !');
             await typeLine('==========================================');
             await typeLine('');
-            await typeLine('Type RACE to run again');
-            await typeLine('');
 
             running = false;
             input.disabled = false;
@@ -225,12 +223,8 @@
             cursor.style.display = 'inline-block';
         }
 
-        async function init() {
-            await typeLine('APL HORSE RACE SIMULATOR');
-            await typeLine('Recreation of APL\\360 horse race (1970s)');
-            await typeLine('');
-            await typeLine('Type RACE to start the simulation');
-            await typeLine('');
+        function init() {
+            output.textContent = '      TYPE RACE TO START\n\n';
             cursor.style.display = 'inline-block';
         }
 
