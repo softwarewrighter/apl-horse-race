@@ -352,15 +352,38 @@
             waitingForInput = false;
             await typeChar('\n');
 
-            if (cmd === 'RACE') {
-                runRace();
-            } else if (cmd === 'HELP') {
-                await typeLine('COMMANDS: RACE - START THE HORSE RACE');
+            // Strip leading ) for APL system commands
+            const aplCmd = cmd.startsWith(')') ? cmd.slice(1) : cmd;
+
+            if (aplCmd === 'RACE') {
+                await runRace();
+            } else if (aplCmd === 'HELP' || aplCmd === '?') {
+                await typeLine('      RACE    - RUN THE HORSE RACE');
+                await typeLine('      )FNS    - LIST FUNCTIONS');
+                await typeLine('      )VARS   - LIST VARIABLES');
+                await typeLine('      )WSID   - WORKSPACE ID');
+                await typeLine('      )CLEAR  - CLEAR SCREEN');
+                await typeLine('      )OFF    - END SESSION');
                 await typeLine('');
                 await promptForInput();
-            } else if (cmd === 'CLEAR') {
+            } else if (aplCmd === 'FNS') {
+                await typeLine('RACE');
+                await typeLine('');
+                await promptForInput();
+            } else if (aplCmd === 'VARS') {
+                await typeLine('');
+                await promptForInput();
+            } else if (aplCmd === 'WSID') {
+                await typeLine('HORSERACE');
+                await typeLine('');
+                await promptForInput();
+            } else if (aplCmd === 'CLEAR') {
                 output.textContent = '';
-                init();
+                await init();
+            } else if (aplCmd === 'OFF' || aplCmd === 'QUIT' || aplCmd === 'EXIT') {
+                await typeLine('      APL\\360 SESSION ENDED');
+                await typeLine('');
+                // Don't prompt - session ended
             } else if (cmd !== '') {
                 await typeLine('SYNTAX ERROR');
                 await typeLine('');
