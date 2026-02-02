@@ -2,6 +2,8 @@
 
 A recreation of the classic horse race simulation from the APL\360 era (1970s), demonstrating APL's array programming paradigm.
 
+**[Live Demo](https://sw-comp-history.github.io/apl-horse-race/)** | [Source Code](https://github.com/sw-comp-history/apl-horse-race)
+
 ![APL Race Listing](images/race-apl-listing.png)
 
 ## Overview

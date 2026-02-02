@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>APL Horse Race Simulator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background: #1a1a2e;
+            color: #00ff00;
+            font-family: 'Courier New', monospace;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .terminal {
+            max-width: 700px;
+            margin: 0 auto;
+            background: #0d0d1a;
+            border: 2px solid #00ff00;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.3);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #00ff00;
+        }
+        h1 {
+            font-size: 1.5em;
+            margin-bottom: 5px;
+        }
+        .subtitle {
+            color: #888;
+            font-size: 0.9em;
+        }
+        #output {
+            min-height: 400px;
+            white-space: pre;
+            line-height: 1.4;
+            margin-bottom: 20px;
+            overflow-y: auto;
+            max-height: 500px;
+        }
+        .prompt-line {
+            display: flex;
+            align-items: center;
+        }
+        .prompt {
+            color: #ffff00;
+            margin-right: 8px;
+        }
+        #input {
+            background: transparent;
+            border: none;
+            color: #00ff00;
+            font-family: inherit;
+            font-size: inherit;
+            outline: none;
+            flex: 1;
+            text-transform: uppercase;
+        }
+        .links {
+            margin-top: 20px;
+            padding-top: 10px;
+            border-top: 1px solid #333;
+            text-align: center;
+            font-size: 0.85em;
+        }
+        .links a {
+            color: #00aaff;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+        .links a:hover {
+            text-decoration: underline;
+        }
+        .winner {
+            color: #ffff00;
+            font-weight: bold;
+        }
+        .horse-lucky { color: #ff6b6b; }
+        .horse-thunder { color: #4ecdc4; }
+        .horse-shadow { color: #a855f7; }
+        .horse-comet { color: #fbbf24; }
+        .horse-blaze { color: #f97316; }
+    </style>
+</head>
+<body>
+    <div class="terminal">
+        <div class="header">
+            <h1>APL Horse Race Simulator</h1>
+            <div class="subtitle">Recreation of classic APL\360 horse race (1970s)</div>
+        </div>
+        <div id="output">GNU APL Horse Race Simulator
+Type RACE to start the simulation
+
+</div>
+        <div class="prompt-line">
+            <span class="prompt">APL&gt;</span>
+            <input type="text" id="input" autofocus autocomplete="off" placeholder="type RACE">
+        </div>
+        <div class="links">
+            <a href="https://github.com/sw-comp-history/apl-horse-race">Source Code</a>
+            <a href="https://github.com/sw-comp-history/apl-horse-race/blob/main/docs/race-apl-explained.md">Documentation</a>
+        </div>
+    </div>
+
+    <script>
+        const horses = ['LUCKY', 'THUNDER', 'SHADOW', 'COMET', 'BLAZE'];
+        const horseColors = {
+            'LUCKY': 'horse-lucky',
+            'THUNDER': 'horse-thunder',
+            'SHADOW': 'horse-shadow',
+            'COMET': 'horse-comet',
+            'BLAZE': 'horse-blaze'
+        };
+        const finishLine = 17;
+        const lineDelay = 150;
+        const roundDelay = 600;
+
+        let running = false;
+        const output = document.getElementById('output');
+        const input = document.getElementById('input');
+
+        function appendLine(text, className) {
+            const span = document.createElement('span');
+            if (className) span.className = className;
+            span.textContent = text + '\n';
+            output.appendChild(span);
+            output.scrollTop = output.scrollHeight;
+        }
+
+        function appendText(text, className) {
+            const span = document.createElement('span');
+            if (className) span.className = className;
+            span.textContent = text;
+            output.appendChild(span);
+            output.scrollTop = output.scrollHeight;
+        }
+
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+        async function runRace() {
+            if (running) return;
+            running = true;
+            input.disabled = true;
+
+            // Initialize positions
+            const positions = {};
+            horses.forEach(h => positions[h] = 0);
+
+            // Header
+            appendLine('');
+            appendLine('══════════════════════════════════════════');
+            appendLine('           THE RACE IS ON!');
+            appendLine('══════════════════════════════════════════');
+            appendLine('');
+
+            await sleep(roundDelay);
+
+            let round = 1;
+            let winner = null;
+
+            while (!winner) {
+                appendLine(`--- ROUND ${round} ---`);
+                await sleep(lineDelay);
+
+                // Move each horse
+                for (const horse of horses) {
+                    const move = Math.floor(Math.random() * 3) + 1;
+                    positions[horse] += move;
+
+                    const track = '▓'.repeat(positions[horse]) + '◄';
+                    const paddedName = horse.padEnd(7);
+
+                    appendText(paddedName + ' │', horseColors[horse]);
+                    appendLine(track, horseColors[horse]);
+
+                    if (positions[horse] >= finishLine && !winner) {
+                        winner = horse;
+                    }
+
+                    await sleep(lineDelay);
+                }
+
+                appendLine('');
+                round++;
+                await sleep(roundDelay);
+            }
+
+            // Winner announcement
+            appendLine('══════════════════════════════════════════');
+            appendText('WINNER: ', 'winner');
+            appendLine(winner + ' !', horseColors[winner]);
+            appendLine('══════════════════════════════════════════');
+            appendLine('');
+            appendLine('Type RACE to run again');
+            appendLine('');
+
+            running = false;
+            input.disabled = false;
+            input.value = '';
+            input.focus();
+        }
+
+        input.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                const cmd = input.value.trim().toUpperCase();
+                appendLine('APL> ' + cmd);
+
+                if (cmd === 'RACE') {
+                    runRace();
+                } else if (cmd === 'HELP') {
+                    appendLine('Commands: RACE - start the horse race');
+                    appendLine('');
+                    input.value = '';
+                } else if (cmd === 'CLEAR') {
+                    output.innerHTML = 'GNU APL Horse Race Simulator\nType RACE to start the simulation\n\n';
+                    input.value = '';
+                } else if (cmd !== '') {
+                    appendLine('Unknown command. Type RACE to start or HELP for commands.');
+                    appendLine('');
+                    input.value = '';
+                } else {
+                    input.value = '';
+                }
+            }
+        });
+    </script>
+</body>
+</html>
