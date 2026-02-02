@@ -110,7 +110,7 @@
             <div id="output"></div><span class="cursor" id="cursor"></span>
         </div>
         <div class="prompt-area">
-            <span class="prompt">)</span>
+            <span class="prompt">      </span>
             <input type="text" id="input" autofocus autocomplete="off" placeholder="type RACE">
         </div>
         <div class="links">
@@ -195,7 +195,7 @@
                     const move = Math.floor(Math.random() * 3) + 1;
                     positions[horse] += move;
 
-                    const track = '*'.repeat(positions[horse]) + '<';
+                    const track = '*'.repeat(positions[horse]) + '>';
                     const paddedName = horse.padEnd(7);
 
                     await typeText(paddedName + ' |' + track);
@@ -238,7 +238,7 @@
             if (e.key === 'Enter' && !running) {
                 const cmd = input.value.trim().toUpperCase();
                 cursor.style.display = 'none';
-                await typeText(')' + cmd);
+                await typeText('      ' + cmd);
                 await typeChar('\n');
 
                 if (cmd === 'RACE') {
