@@ -88,17 +88,6 @@
         .links a:hover {
             text-decoration: underline;
         }
-        .cursor {
-            display: inline-block;
-            width: 8px;
-            height: 14px;
-            background: #000;
-            animation: blink 1s step-end infinite;
-            vertical-align: text-bottom;
-        }
-        @keyframes blink {
-            50% { opacity: 0; }
-        }
     </style>
 </head>
 <body>
@@ -107,7 +96,7 @@
             APL\360 &mdash; 15 CPS SELECTRIC SIMULATION
         </div>
         <div class="greenbar">
-            <div id="output"></div><span class="cursor" id="cursor"></span>
+            <div id="output"></div>
         </div>
         <div class="prompt-area">
             <span class="prompt">      </span>
@@ -156,9 +145,27 @@
             osc.stop(audioCtx.currentTime + 0.03);
         }
 
+        function playCarriageReturn() {
+            if (!audioCtx) return;
+            // Low thunk for carriage return
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+
+            osc.frequency.value = 150 + Math.random() * 50;
+            osc.type = 'sine';
+
+            gain.gain.value = 0.15;
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.08);
+
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.08);
+        }
+
         let running = false;
         const output = document.getElementById('output');
-        const cursor = document.getElementById('cursor');
         const input = document.getElementById('input');
         const greenbar = document.querySelector('.greenbar');
 
@@ -177,6 +184,10 @@
         }
 
         async function typeChar(char) {
+            if (char === '\n') {
+                playCarriageReturn();
+                await sleep(baseCharDelay); // CR takes 1/15 sec
+            }
             output.textContent += char;
             greenbar.scrollTop = greenbar.scrollHeight;
             if (char !== '\n' && char !== ' ') {
@@ -202,7 +213,6 @@
             if (running) return;
             running = true;
             input.disabled = true;
-            cursor.style.display = 'none';
 
             // Initialize positions
             const positions = {};
@@ -257,19 +267,16 @@
             input.disabled = false;
             input.value = '';
             input.focus();
-            cursor.style.display = 'inline-block';
         }
 
         function init() {
             output.textContent = '      TYPE RACE TO START\n\n';
-            cursor.style.display = 'inline-block';
         }
 
         input.addEventListener('keydown', async function(e) {
             initAudio();
             if (e.key === 'Enter' && !running) {
                 const cmd = input.value.trim().toUpperCase();
-                cursor.style.display = 'none';
                 await typeText('      ' + cmd);
                 await typeChar('\n');
 
@@ -277,10 +284,9 @@
                     input.value = '';
                     runRace();
                 } else if (cmd === 'HELP') {
-                    await typeLine('Commands: RACE - start the horse race');
+                    await typeLine('COMMANDS: RACE - START THE HORSE RACE');
                     await typeLine('');
                     input.value = '';
-                    cursor.style.display = 'inline-block';
                 } else if (cmd === 'CLEAR') {
                     output.textContent = '';
                     input.value = '';
@@ -289,10 +295,8 @@
                     await typeLine('SYNTAX ERROR');
                     await typeLine('');
                     input.value = '';
-                    cursor.style.display = 'inline-block';
                 } else {
                     input.value = '';
-                    cursor.style.display = 'inline-block';
                 }
             }
         });
