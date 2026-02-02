@@ -220,14 +220,14 @@
             osc.frequency.value = 1200;
             osc.type = 'sine';
 
-            gain.gain.value = 0.05;
-            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.02);
+            gain.gain.value = 0.08;
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.025);
 
             osc.connect(gain);
             gain.connect(audioCtx.destination);
 
             osc.start();
-            osc.stop(audioCtx.currentTime + 0.02);
+            osc.stop(audioCtx.currentTime + 0.025);
         }
 
         function playLineFeed() {
@@ -403,6 +403,8 @@
             startModal.classList.add('modal-hidden');
             initAudio();
             input.focus();
+            // Small delay to ensure audio context is ready
+            await sleep(100);
             await init();
         }
 
@@ -442,7 +444,14 @@
                 await typeLine('');
                 await promptForInput();
             } else if (aplCmd === 'VARS') {
-                await typeLine('ABOUT');
+                await typeLine('ABOUT DESCRIBE');
+                await typeLine('');
+                await promptForInput();
+            } else if (aplCmd === 'DESCRIBE') {
+                await typeLine('');
+                await typeLine('CLASSIC 1970S APL\\360 HORSE RACE SIMULATION');
+                await typeLine('FIVE HORSES ADVANCE RANDOMLY EACH ROUND');
+                await typeLine('FIRST TO CROSS THE FINISH LINE WINS');
                 await typeLine('');
                 await promptForInput();
             } else if (aplCmd === 'ABOUT') {
