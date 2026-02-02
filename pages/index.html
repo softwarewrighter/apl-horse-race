@@ -66,12 +66,12 @@
         #input {
             background: transparent;
             border: none;
-            color: #000;
+            color: transparent;
             font-family: inherit;
             font-size: inherit;
             outline: none;
             flex: 1;
-            text-transform: uppercase;
+            caret-color: transparent;
         }
         .links {
             padding: 15px 20px;
@@ -100,7 +100,7 @@
         </div>
         <div class="prompt-area">
             <span class="prompt">      </span>
-            <input type="text" id="input" autofocus autocomplete="off" placeholder="type RACE">
+            <input type="text" id="input" autofocus autocomplete="off">
         </div>
         <div class="links">
             <a href="https://github.com/sw-comp-history/apl-horse-race">Source Code</a>
@@ -125,17 +125,18 @@
             }
         }
 
-        function playClick() {
+        function playClick(char) {
             if (!audioCtx) return;
             const osc = audioCtx.createOscillator();
             const gain = audioCtx.createGain();
 
-            // Randomize click character
-            const freq = 1800 + Math.random() * 400;
+            // Consistent frequency based on character code
+            const charCode = char ? char.charCodeAt(0) : 65;
+            const freq = 1600 + (charCode % 26) * 25;
             osc.frequency.value = freq;
             osc.type = 'square';
 
-            gain.gain.value = 0.08 + Math.random() * 0.04;
+            gain.gain.value = 0.1;
             gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.03);
 
             osc.connect(gain);
@@ -237,7 +238,7 @@
                 greenbar.scrollTop = greenbar.scrollHeight;
                 await sleep(baseCharDelay);
             } else {
-                playClick();
+                playClick(char);
                 output.textContent += char;
                 greenbar.scrollTop = greenbar.scrollHeight;
                 await sleep(getCharDelay());
@@ -312,40 +313,75 @@
             await typeLine('');
 
             running = false;
-            input.disabled = false;
-            input.value = '';
             input.focus();
+            await promptForInput();
         }
 
+        let inputBuffer = '';
+        let waitingForInput = false;
+
         function init() {
-            output.textContent = '      TYPE RACE TO START\n\n';
+            output.textContent = '      TYPE RACE TO START\n\n      ';
+            waitingForInput = true;
+            inputBuffer = '';
+        }
+
+        async function promptForInput() {
+            waitingForInput = false;
+            // Print 6 spaces with sounds
+            for (let i = 0; i < 6; i++) {
+                playSpaceClick();
+                output.textContent += ' ';
+                greenbar.scrollTop = greenbar.scrollHeight;
+                await sleep(baseCharDelay);
+            }
+            waitingForInput = true;
+            inputBuffer = '';
+        }
+
+        async function processCommand(cmd) {
+            waitingForInput = false;
+            await typeChar('\n');
+
+            if (cmd === 'RACE') {
+                runRace();
+            } else if (cmd === 'HELP') {
+                await typeLine('COMMANDS: RACE - START THE HORSE RACE');
+                await typeLine('');
+                await promptForInput();
+            } else if (cmd === 'CLEAR') {
+                output.textContent = '';
+                init();
+            } else if (cmd !== '') {
+                await typeLine('SYNTAX ERROR');
+                await typeLine('');
+                await promptForInput();
+            } else {
+                await promptForInput();
+            }
         }
 
         input.addEventListener('keydown', async function(e) {
             initAudio();
-            if (e.key === 'Enter' && !running) {
-                const cmd = input.value.trim().toUpperCase();
-                await typeText('      ' + cmd);
-                await typeChar('\n');
+            if (!waitingForInput || running) return;
 
-                if (cmd === 'RACE') {
-                    input.value = '';
-                    runRace();
-                } else if (cmd === 'HELP') {
-                    await typeLine('COMMANDS: RACE - START THE HORSE RACE');
-                    await typeLine('');
-                    input.value = '';
-                } else if (cmd === 'CLEAR') {
-                    output.textContent = '';
-                    input.value = '';
-                    init();
-                } else if (cmd !== '') {
-                    await typeLine('SYNTAX ERROR');
-                    await typeLine('');
-                    input.value = '';
-                } else {
-                    input.value = '';
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                const cmd = inputBuffer.trim().toUpperCase();
+                processCommand(cmd);
+            } else if (e.key === 'Backspace') {
+                e.preventDefault();
+                if (inputBuffer.length > 0) {
+                    inputBuffer = inputBuffer.slice(0, -1);
+                    output.textContent = output.textContent.slice(0, -1);
                 }
+            } else if (e.key.length === 1 && e.key.match(/[a-zA-Z]/)) {
+                e.preventDefault();
+                const char = e.key.toUpperCase();
+                inputBuffer += char;
+                playClick(char);
+                output.textContent += char;
+                greenbar.scrollTop = greenbar.scrollHeight;
             }
         });
 
