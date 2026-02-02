@@ -195,7 +195,7 @@
                     const move = Math.floor(Math.random() * 3) + 1;
                     positions[horse] += move;
 
-                    const track = String.fromCharCode(0x2593).repeat(positions[horse]) + '<';
+                    const track = '*'.repeat(positions[horse]) + '<';
                     const paddedName = horse.padEnd(7);
 
                     await typeText(paddedName + ' |' + track);
