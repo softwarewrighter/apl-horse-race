@@ -320,10 +320,19 @@
         let inputBuffer = '';
         let waitingForInput = false;
 
-        function init() {
-            output.textContent = '      TYPE RACE TO START\n\n      ';
-            waitingForInput = true;
-            inputBuffer = '';
+        async function init() {
+            output.textContent = '';
+            await typeLine('      TYPE RACE TO START');
+            await typeLine('');
+            await promptForInput();
+        }
+
+        let started = false;
+        async function startDemo() {
+            if (started) return;
+            started = true;
+            initAudio();
+            await init();
         }
 
         async function promptForInput() {
@@ -362,7 +371,13 @@
         }
 
         input.addEventListener('keydown', async function(e) {
-            initAudio();
+            // First keypress starts the demo with sounds
+            if (!started) {
+                e.preventDefault();
+                startDemo();
+                return;
+            }
+
             if (!waitingForInput || running) return;
 
             if (e.key === 'Enter') {
@@ -375,7 +390,13 @@
                     inputBuffer = inputBuffer.slice(0, -1);
                     output.textContent = output.textContent.slice(0, -1);
                 }
-            } else if (e.key.length === 1 && e.key.match(/[a-zA-Z]/)) {
+            } else if (e.key === 'Tab' || e.key === ' ') {
+                e.preventDefault();
+                inputBuffer += ' ';
+                playSpaceClick();
+                output.textContent += ' ';
+                greenbar.scrollTop = greenbar.scrollHeight;
+            } else if (e.key.length === 1 && e.key.match(/[a-zA-Z0-9\-=*|!@#$%^&()_+\[\]{};':",.<>?\/\\`~]/)) {
                 e.preventDefault();
                 const char = e.key.toUpperCase();
                 inputBuffer += char;
@@ -385,7 +406,16 @@
             }
         });
 
-        init();
+        // Show prompt to start
+        output.textContent = '      PRESS ANY KEY TO START\n';
+
+        // Also allow click to start
+        document.addEventListener('click', function() {
+            if (!started) {
+                input.focus();
+                startDemo();
+            }
+        });
     </script>
 </body>
 </html>
