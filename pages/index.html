@@ -145,23 +145,62 @@
             osc.stop(audioCtx.currentTime + 0.03);
         }
 
-        function playCarriageReturn() {
+        function playSpaceClick() {
             if (!audioCtx) return;
-            // Low thunk for carriage return
+            // Lighter click for space bar
             const osc = audioCtx.createOscillator();
             const gain = audioCtx.createGain();
 
-            osc.frequency.value = 150 + Math.random() * 50;
+            osc.frequency.value = 1200;
             osc.type = 'sine';
 
-            gain.gain.value = 0.15;
-            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.08);
+            gain.gain.value = 0.05;
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.02);
 
             osc.connect(gain);
             gain.connect(audioCtx.destination);
 
             osc.start();
-            osc.stop(audioCtx.currentTime + 0.08);
+            osc.stop(audioCtx.currentTime + 0.02);
+        }
+
+        function playLineFeed() {
+            if (!audioCtx) return;
+            // Whir sound for line feed
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+
+            osc.frequency.value = 300;
+            osc.frequency.linearRampToValueAtTime(200, audioCtx.currentTime + 0.05);
+            osc.type = 'sawtooth';
+
+            gain.gain.value = 0.08;
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.05);
+
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.05);
+        }
+
+        function playCarriageReturn() {
+            if (!audioCtx) return;
+            // Thunk for carriage return
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+
+            osc.frequency.value = 120;
+            osc.type = 'sine';
+
+            gain.gain.value = 0.2;
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.04);
+
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.04);
         }
 
         let running = false;
@@ -185,15 +224,24 @@
 
         async function typeChar(char) {
             if (char === '\n') {
+                // LF then CR, each ~1/15 sec
+                playLineFeed();
+                await sleep(baseCharDelay);
                 playCarriageReturn();
-                await sleep(baseCharDelay); // CR takes 1/15 sec
-            }
-            output.textContent += char;
-            greenbar.scrollTop = greenbar.scrollHeight;
-            if (char !== '\n' && char !== ' ') {
+                await sleep(baseCharDelay);
+                output.textContent += char;
+                greenbar.scrollTop = greenbar.scrollHeight;
+            } else if (char === ' ') {
+                playSpaceClick();
+                output.textContent += char;
+                greenbar.scrollTop = greenbar.scrollHeight;
+                await sleep(baseCharDelay);
+            } else {
                 playClick();
+                output.textContent += char;
+                greenbar.scrollTop = greenbar.scrollHeight;
+                await sleep(getCharDelay());
             }
-            await sleep(getCharDelay());
         }
 
         async function typeLine(text) {
