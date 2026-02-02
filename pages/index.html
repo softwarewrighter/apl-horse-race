@@ -104,7 +104,7 @@
 <body>
     <div class="paper-container">
         <div class="header">
-            GNU APL 1.8 &mdash; 15 CPS TELETYPE SIMULATION
+            APL\360 &mdash; 15 CPS TELETYPE SIMULATION
         </div>
         <div class="greenbar">
             <div id="output"></div><span class="cursor" id="cursor"></span>
@@ -190,20 +190,26 @@
             while (!winner) {
                 await typeLine('--- ROUND ' + round + ' ---');
 
-                // Move each horse
+                // Move all horses first
                 for (const horse of horses) {
                     const move = Math.floor(Math.random() * 3) + 1;
                     positions[horse] += move;
+                    if (positions[horse] >= finishLine && !winner) {
+                        winner = horse;
+                    }
+                }
 
-                    const track = '*'.repeat(positions[horse]) + '>';
+                // Display horses (cap others at winner's position - 1 if winner exists)
+                const winnerPos = winner ? positions[winner] : 999;
+                for (const horse of horses) {
+                    const displayPos = (winner && horse !== winner)
+                        ? Math.min(positions[horse], winnerPos - 1)
+                        : positions[horse];
+                    const track = '*'.repeat(displayPos) + '>';
                     const paddedName = horse.padEnd(7);
 
                     await typeText(paddedName + ' |' + track);
                     await typeChar('\n');
-
-                    if (positions[horse] >= finishLine && !winner) {
-                        winner = horse;
-                    }
                 }
 
                 await typeLine('');
