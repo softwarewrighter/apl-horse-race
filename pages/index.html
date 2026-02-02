@@ -394,7 +394,7 @@
 
         async function init() {
             output.textContent = '';
-            await typeLine('      TYPE RACE TO START');
+            await typeLine('TYPE HELP TO START');
             await typeLine('');
             await promptForInput();
         }
@@ -429,12 +429,12 @@
             if (aplCmd === 'RACE') {
                 await runRace();
             } else if (aplCmd === 'HELP' || aplCmd === '?') {
-                await typeLine('      RACE    - RUN THE HORSE RACE');
-                await typeLine('      ABOUT   - LICENSE AND COPYRIGHT');
-                await typeLine('      )FNS    - LIST FUNCTIONS');
-                await typeLine('      )VARS   - LIST VARIABLES');
-                await typeLine('      )WSID   - WORKSPACE ID');
-                await typeLine('      )OFF    - END SESSION');
+                await typeLine('');
+                await typeLine('RACE   - RUN THE HORSE RACE');
+                await typeLine(')FNS   - LIST FUNCTIONS');
+                await typeLine(')VARS  - LIST VARIABLES');
+                await typeLine(')WSID  - WORKSPACE ID');
+                await typeLine(')OFF   - END SESSION');
                 await typeLine('');
                 await promptForInput();
             } else if (aplCmd === 'FNS') {
@@ -463,7 +463,7 @@
                 await typeLine('');
                 await promptForInput();
             } else if (aplCmd === 'OFF' || aplCmd === 'QUIT' || aplCmd === 'EXIT') {
-                await typeLine('      APL\\360 SESSION ENDED');
+                await typeLine('APL\\360 SESSION ENDED');
                 await typeLine('');
                 // Don't prompt - session ended
             } else if (cmd !== '') {
